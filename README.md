@@ -1,5 +1,3 @@
-[![Code Grade](<BADGE-LINK>)](<DASHBOARD-LINK>)
-
 # PoulPyX
 
 PoulPyX est un petit générateur de script pour le SAXS, utilisant l'interface tkinter (https://docs.python.org/fr/3/library/tkinter.html).
