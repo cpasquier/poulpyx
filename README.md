@@ -1,3 +1,5 @@
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/43a469ddcfc54bb187b1f3d73ce10d1b)](https://www.codacy.com/gh/cpasquier/poulpyx/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cpasquier/poulpyx&amp;utm_campaign=Badge_Grade)
+
 # PoulPyX
 
 PoulPyX est un petit générateur de script pour le SAXS, utilisant l'interface tkinter (https://docs.python.org/fr/3/library/tkinter.html).
