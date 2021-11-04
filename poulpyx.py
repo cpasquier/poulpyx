@@ -31,7 +31,7 @@ tk.Label(gui, text="Scan number").grid(row=0)
 a1 = IntVar()
 e1 = tk.Entry(gui, textvariable=a1)
 e1.grid(row=0, column=1)
-button1 = tk.Button(text = "OK", command = close_window).grid(row=8)
+button1 = tk.Button(text = "OK", command = close_window).grid(row=1,pady=10)
 gui.mainloop()
 tr_expe_nr = a1.get()
 
@@ -168,7 +168,7 @@ for n in np.arange(1,len(coord)+1,1):
     e8 = Entry(gu, textvariable=d8).grid(row=n, column=8)
     thick_refs.append(d8)
 
-button2 = tk.Button(text = "OK", command = close_window2).grid(row=20)
+button2 = tk.Button(text = "OK", command = close_window2, width=4, height=2).grid(row=len(coord)+1,column=4, pady=10)
 gu.mainloop()
 
 def foldersel():
@@ -190,7 +190,7 @@ with open(runpath, 'w') as f:
     for n in np.arange(1,len(coord)+1,1):
         type_sample = type_refs[n-1].get()
         if type_sample != "Vacuum":
-            time_sample = time_refs[n-1].get()       #### TO-DO: use pandas
+            time_sample = time_refs[n-1].get()       #### TO-DO: use pandas/dict?
             name_sample = name_refs[n-1].get()
             x_sample = x_refs[n-1]
             z_temp = z_refs[n-1].get()  #string
@@ -229,7 +229,7 @@ with open(lupopath, 'w') as p:
             p.write(str(type_refs[n].get())+'\t'+str(transm_refs[n])+'\t'+str(time_refs[n].get())+'\n')
             for m in np.arange(0,len(coord),1):
                 if type_refs[m].get()=="Vacuum" and number_refs[m].get()==num:
-                    p.write(str(type_refs[m].get())+'\t'+str(transm_refs[m])+'\t'+str(time_refs[m].get())+'\n')
+                    p.write(str(type_refs[m].get())+'\t'+str(transm_refs[m])+'\n')
                     break
             break
 p.close()
