@@ -63,7 +63,7 @@ cursor = Cursor(ax, horizOn=True, vertOn=True, useblit=True,
 coord=[]   #list for coordinates
 
 def onclick(event):
-    global coord   
+    global coord
     x = event.xdata
     y = event.ydata
     flipper=0
@@ -80,7 +80,7 @@ def onclick(event):
 
     if flipper==0:
         coord.append((x,y))
-        
+
     # Clear all markers and text (necessary for unclicking procedure)
     for aline in ax.lines:
         aline.set_marker(None)
@@ -195,7 +195,6 @@ ztest = ''
 temptest = ''
 heat = False
 cool = False
-temp_suivi = 20  #room temperature; will update with current sample temperature if changed
 tempreg = False  #checks if the temperature regulation has been used
 with open(runpath, 'w') as f:
     f.write('sc'+'\n')
@@ -203,7 +202,7 @@ with open(runpath, 'w') as f:
     for n in np.arange(1,len(coord)+1,1):
         type_sample = type_refs[n-1].get()
         if type_sample != "Vacuum":
-            time_sample = time_refs[n-1].get()       #### TO-DO: use pandas/dict?
+            time_sample = time_refs[n-1].get()      
             name_sample = name_refs[n-1].get()
             x_sample = x_refs[n-1]
             z_tempor = z_refs[n-1].get()  #string
@@ -238,10 +237,8 @@ with open(runpath, 'w') as f:
                             f.write('cool_on'+'\n')
                             cool = True
                     sleep_time = 900     #standard 15 min for equilibration
-                    #sleep_time = int(abs((float(temp_sample)-float(temp_suivi))*45))  #45s per Celcius degree (to adapt)
                     f.write('set_temp '+str(temp_sample)+'\n')
                     f.write('sleep('+str(sleep_time)+')'+'\n')
-                    temp_suivi = temp_sample
                 if len(temp_str_list) > 1:
                     templine = '_T'+str(temp_sample)
                 else:
