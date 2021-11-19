@@ -94,7 +94,7 @@ def onclick(event):
         ax.plot(ctuple2[0],ctuple2[1], marker='o', color='r')
         ax.text(ctuple2[0]-0.4,ctuple2[1]-(tr_max-tr_min)/12, str(nb), color='r', weight='bold')
     fig.canvas.draw()    #redraw the figure
-    
+
 fig.canvas.mpl_connect('button_press_event', onclick)
 plt.show()
 
@@ -202,7 +202,7 @@ with open(runpath, 'w') as f:
     for n in np.arange(1,len(coord)+1,1):
         type_sample = type_refs[n-1].get()
         if type_sample != "Vacuum":
-            time_sample = time_refs[n-1].get()      
+            time_sample = time_refs[n-1].get()
             name_sample = name_refs[n-1].get()
             x_sample = x_refs[n-1]
             z_tempor = z_refs[n-1].get()  #string
