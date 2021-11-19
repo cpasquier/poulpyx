@@ -19,6 +19,7 @@ def close_window():
     gui.destroy()
 
 gui = Tk()
+gui.title('Select scan number')
 tk.Label(gui, text="Scan number").grid(row=0)
 a1 = IntVar()
 e1 = tk.Entry(gui, textvariable=a1)
@@ -110,6 +111,7 @@ def close_window2():
     gu.destroy()
 
 gu = Tk()
+gu.title('Enter parameters')
 
 tk.Label(gu, text="Point nr.").grid(row=0, column=0)
 tk.Label(gu, text="Name").grid(row=0, column=1)
