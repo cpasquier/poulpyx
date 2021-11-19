@@ -4,24 +4,15 @@ from matplotlib.widgets import Cursor
 import os
 import tkinter as tk
 import tkinter.filedialog as fd
-from tkinter import *
+from tkinter import Tk,IntVar,StringVar,Entry,OptionMenu,DoubleVar
 import csv
 from datetime import date
 plt.rcParams.update({'font.size': 16, 'figure.figsize': [12.0, 6.0]})
 
 # File selection
-def filesel():
-    global tr_file
-    root = Tk()
-    file_extensions = ['*.txt','*.dat']
-    ftypes = [
-        ('All files', '*'),
-        ('txt and dat files (*.txt, *dat)', file_extensions),
-    ]
-    tr_file = fd.askopenfile(parent=root, title='Select a file')
-    root.destroy()
-
-filesel()
+root = Tk()
+tr_file = fd.askopenfile(parent=root, title='Select a lineup file')
+root.destroy()
 
 # Opens a window which asks for the experiment number
 def close_window():
@@ -69,9 +60,10 @@ ax.plot(xpos_list, tr_list, color = 'b')
 cursor = Cursor(ax, horizOn=True, vertOn=True, useblit=True,
                 color = 'r', linewidth = 1)
 
-coord = []   #list for coordinates
+coord=[]   #list for coordinates
+
 def onclick(event):
-    global coord
+    global coord   
     x = event.xdata
     y = event.ydata
     flipper=0
@@ -184,13 +176,10 @@ e10 = Entry(gu, textvariable=d10).grid(row=len(coord)+1,column=2, pady=15)
 button2 = tk.Button(text = "OK", command = close_window2, width=6, height=2).grid(row=len(coord)+1,column=5, pady=15)
 gu.mainloop()
 
-def foldersel():
-    global pfx
-    gu3 = Tk()
-    pfx = fd.askdirectory(parent=gu3, title='Select a folder to save data')
-    gu3.destroy()
-
-foldersel()
+# Select folder to save the generated files
+gu3 = Tk()
+pfx = fd.askdirectory(parent=gu3, title='Select a folder to save data')
+gu3.destroy()
 
 # Get the date of the day for file numbering
 today = date.today()
@@ -281,7 +270,7 @@ with open(parampath, 'w', encoding='UTF8') as h:
     header = ['Name', 'Sample group', 'Type', 'X position', 'Z positions', 'Transmission', 'Time (s)', 'Thickness']
     writer.writerow(header)
     for n in np.arange(0,len(coord),1):
-        data = [name_refs[n].get(), number_refs[n].get(), type_refs[n].get(), x_refs[n], z_refs[n].get(), transm_refs[n], 
+        data = [name_refs[n].get(), number_refs[n].get(), type_refs[n].get(), x_refs[n], z_refs[n].get(), transm_refs[n],
         time_refs[n].get(), thick_refs[n].get()]
         writer.writerow(data)
 h.close()
