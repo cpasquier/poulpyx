@@ -51,14 +51,15 @@ def close_window():
     gui.destroy()
 
 gui = Tk()
+gui.title('Parameters')
 
-tk.Label(gui, text="Transmission PE").grid(row=0)
-tk.Label(gui, text="Transmission vide").grid(row=1)
-tk.Label(gui, text="t(s)").grid(row=2)
-tk.Label(gui, text="Phi (flux pendant la manip)").grid(row=3)
-tk.Label(gui, text="e (cm)").grid(row=4)
-tk.Label(gui, text="BF electronic").grid(row=5)
-tk.Label(gui, text="Phi normalization PE ").grid(row=6)
+tk.Label(gui, text="Transmission Lupo").grid(row=0, padx=5, pady=2)
+tk.Label(gui, text="Transmission vacuum").grid(row=1, padx=5, pady=2)
+tk.Label(gui, text="t(s)").grid(row=2, padx=5, pady=2)
+tk.Label(gui, text="Phi (flux during experiment)").grid(row=3, padx=5, pady=2)
+tk.Label(gui, text="e (cm)").grid(row=4, padx=5, pady=2)
+tk.Label(gui, text="BF electronic").grid(row=5, padx=5, pady=2)
+tk.Label(gui, text="Phi normalization Lupo ").grid(row=6, padx=5, pady=2)
 
 a1 = DoubleVar()
 a2 = DoubleVar()
@@ -94,10 +95,10 @@ e7.grid(row=6, column=1)
 
 v = StringVar()
 v.set("nm-1")
-r1 = Radiobutton(gui, text="A-1", variable=v, value="A-1").grid(row=7, column=0)
-r2 = Radiobutton(gui, text="nm-1", variable=v, value="nm-1").grid(row=7, column=1)
+r1 = Radiobutton(gui, text="A-1", variable=v, value="A-1").grid(row=7, column=0, pady=15)
+r2 = Radiobutton(gui, text="nm-1", variable=v, value="nm-1").grid(row=7, column=1, pady=15)
 
-button = tk.Button(text = "OK", command = close_window, width=4, height=2).grid(row=8, pady=10)
+button = tk.Button(text = "OK", command = close_window, width=4, height=2).grid(row=8, pady=5)
 
 gui.mainloop()
 
@@ -132,13 +133,13 @@ pente = (y1-y2)/(x1-x2)
 intersect = y1 - pente*x1
 i_artif = pente*q_peak + intersect
 
-# Then we loop on k to get the closest I to 4.9 cm-1
+# Then we loop on k to get the closest I to 6.15 cm-1
 setdif = 10000
 for k in np.arange(0.001, 20.001, 0.001):
     I_norm_test = ((i_artif-BF_elec)/(epaisseur*Tr_div*temps))*Phi_div*k
-    if abs(I_norm_test-4.9)<setdif:
+    if abs(I_norm_test-6.15)<setdif:
         kset = k
-        setdif = abs(I_norm_test-4.9)
+        setdif = abs(I_norm_test-6.15)
 
 I_norm_test = ((i_artif-BF_elec)/(epaisseur*Tr_div*temps))*Phi_div*kset
 I_norm = ((i-BF_elec)/(epaisseur*Tr_div*temps))*Phi_div*kset
