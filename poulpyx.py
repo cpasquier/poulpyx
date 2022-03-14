@@ -4,7 +4,7 @@ from matplotlib.widgets import Cursor
 import os, sys, subprocess
 import tkinter as tk
 import tkinter.filedialog as fd
-from tkinter import Tk,IntVar,StringVar,Entry,OptionMenu,DoubleVar,messagebox
+from tkinter import Tk,IntVar,StringVar,Entry,OptionMenu,messagebox
 import csv
 from datetime import date
 plt.rcParams.update({'font.size': 16, 'figure.figsize': [12.0, 6.0]})
@@ -13,7 +13,7 @@ plt.rcParams.update({'font.size': 16, 'figure.figsize': [12.0, 6.0]})
 today = date.today()
 d1 = today.strftime("%y%m%d")
 
-# File 
+# Import the lineup file
 linedir = '.' #'/home/mar345/data/LineUp'
 lfnumber = []
 if os.path.isdir(linedir):
@@ -139,14 +139,14 @@ def close_window2():       #function to close the window
     gu.destroy()
 
 def checkbeforeclose():    #check if all fields are filled correctly prior to closing the window
-    karl, lila, daisuke = ([],[],[]) 
+    karl, lila, daisuke = ([],[],[])
     err1,err2,err3,err4,err5,err6,err7,err8 = ('','','','','','','','')
     iserr = False
     temperatures1 = d9.get()
     temp_str_list1 = temperatures1.split(',')
     for i in np.arange(0,len(name_refs),1):
         z_tempor1 = z_refs[i].get()          #test pour savoir si tous les z sont des float
-        z_str_list1 = z_tempor1.split(',')   
+        z_str_list1 = z_tempor1.split(',')
         for a in z_str_list1:
             if a!='':
                 try:
@@ -154,7 +154,7 @@ def checkbeforeclose():    #check if all fields are filled correctly prior to cl
                 except ValueError:
                     iserr = True
                     err6 = "Error in z pos. entry"+'\n'
-        if type_refs[i].get() != 'Vacuum':     
+        if type_refs[i].get() != 'Vacuum':
             karl.append(name_refs[i].get())    #noms : on ne testera que sur les sample et lupo
             lila.append(time_refs[i].get())    #temps : idem
             daisuke.append(thick_refs[i].get())  #thickness : idem
@@ -362,7 +362,7 @@ with open(runpath, 'w') as f:
                             filelist.append(testpath2)  #we store the final name of the new file
                             break
                     if testpath2 != testpath1:     #tests if there is a need for increment of the name in the acquisition line
-                        f.write(acqline+zline+templine+'-'+str(inc-1)+'\n')  
+                        f.write(acqline+zline+templine+'-'+str(inc-1)+'\n')
                     else:
                         f.write(acqline+zline+templine+'\n')   #start acquisition, add z and T to file name if relevant
 
