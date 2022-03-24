@@ -4,16 +4,18 @@ from matplotlib.widgets import Cursor
 import os, sys, subprocess
 import tkinter as tk
 import tkinter.filedialog as fd
-from tkinter import Tk,IntVar,StringVar,Entry,OptionMenu,messagebox
+from tkinter import Tk,IntVar,StringVar,Entry,OptionMenu,DoubleVar,messagebox
 import csv
 from datetime import date
+from os import listdir
+from os.path import isfile, join
 plt.rcParams.update({'font.size': 16, 'figure.figsize': [12.0, 6.0]})
 
 # Get the date of the day for file numbering
 today = date.today()
 d1 = today.strftime("%y%m%d")
 
-# Import the lineup file
+# File 
 linedir = '.' #'/home/mar345/data/LineUp'
 lfnumber = []
 if os.path.isdir(linedir):
@@ -139,14 +141,14 @@ def close_window2():       #function to close the window
     gu.destroy()
 
 def checkbeforeclose():    #check if all fields are filled correctly prior to closing the window
-    karl, lila, daisuke = ([],[],[])
+    karl, lila, thi_error = ([],[],[]) 
     err1,err2,err3,err4,err5,err6,err7,err8 = ('','','','','','','','')
     iserr = False
     temperatures1 = d9.get()
     temp_str_list1 = temperatures1.split(',')
     for i in np.arange(0,len(name_refs),1):
         z_tempor1 = z_refs[i].get()          #test pour savoir si tous les z sont des float
-        z_str_list1 = z_tempor1.split(',')
+        z_str_list1 = z_tempor1.split(',')   
         for a in z_str_list1:
             if a!='':
                 try:
@@ -154,10 +156,10 @@ def checkbeforeclose():    #check if all fields are filled correctly prior to cl
                 except ValueError:
                     iserr = True
                     err6 = "Error in z pos. entry"+'\n'
-        if type_refs[i].get() != 'Vacuum':
+        if type_refs[i].get() != 'Air':     
             karl.append(name_refs[i].get())    #noms : on ne testera que sur les sample et lupo
             lila.append(time_refs[i].get())    #temps : idem
-            daisuke.append(thick_refs[i].get())  #thickness : idem
+            thi_error.append(thick_refs[i].get())  #thickness : idem
     if  '' in karl:
         err1 = "Sample name missing"+'\n'
         iserr = True
@@ -173,7 +175,7 @@ def checkbeforeclose():    #check if all fields are filled correctly prior to cl
         except ValueError:
             iserr = True
             err7 = "Error in measurement time entry"+'\n'
-    for a in daisuke:
+    for a in thi_error:
         try:
             float(a)
         except ValueError:
@@ -208,20 +210,18 @@ gu = Tk()
 gu.title('Enter parameters')
 tk.Label(gu, text="Point nr.").grid(row=0, column=0)
 tk.Label(gu, text="Name").grid(row=0, column=1)
-tk.Label(gu, text="Sample group").grid(row=0, column=2)
-tk.Label(gu, text="Meas. type").grid(row=0, column=3)
-tk.Label(gu, text="x pos.").grid(row=0, column=4)
-tk.Label(gu, text="z pos.").grid(row=0, column=5)
-tk.Label(gu, text="Transmission").grid(row=0, column=6)
-tk.Label(gu, text="Measurement time (s)").grid(row=0, column=7)
-tk.Label(gu, font=("Arial", 8, "italic"), text="Same as previous").grid(row=0, column=8)
-tk.Label(gu, text="Thickness (cm)").grid(row=0, column=9)
+tk.Label(gu, text="Meas. type").grid(row=0, column=2)
+tk.Label(gu, text="x pos.").grid(row=0, column=3)
+tk.Label(gu, text="z pos.").grid(row=0, column=4)
+tk.Label(gu, text="Transmission").grid(row=0, column=5)
+tk.Label(gu, text="Measurement time (s)").grid(row=0, column=6)
+tk.Label(gu, font=("Arial", 8, "italic"), text="Same as previous").grid(row=0, column=7)
+tk.Label(gu, text="Thickness (cm)").grid(row=0, column=8)
 
 name_refs = []
 time_refs = []
 x_refs = []
 z_refs = []
-number_refs = []
 type_refs = []
 transm_refs = []
 thick_refs = []
@@ -233,39 +233,35 @@ for n in np.arange(1,len(coord)+1,1):
     e1 = Entry(gu, textvariable=s1).grid(row=n, column=1, padx=5, pady=2)
     name_refs.append(s1)
 
-    i2 = StringVar(gu)  #sample group
-    e2 = Entry(gu, textvariable=i2).grid(row=n, column=2, padx=5, pady=2)
-    number_refs.append(i2)
-
     v3 = StringVar(gu)  #sample subtype
     v3.set("Sample")
-    m3 = OptionMenu(gu, v3, "Sample", "Vacuum", "Lupo/PE").grid(row=n, column=3, padx=5, pady=2)
+    m3 = OptionMenu(gu, v3, "Sample", "Air", "Lupo/PE").grid(row=n, column=2, padx=5, pady=2)
     type_refs.append(v3)
 
-    tk.Label(gu, text=str(round(xlist[n-1], 1))).grid(row=n, column=4, padx=5, pady=2)  #x-pos
+    tk.Label(gu, text=str(round(xlist[n-1], 1))).grid(row=n, column=3, padx=5, pady=2)  #x-pos
     x_refs.append(round(xlist[n-1], 1))
 
     d5 = StringVar(gu)  #z-pos (needs to be a string for later)
-    e5 = Entry(gu, textvariable=d5).grid(row=n, column=5, padx=5, pady=2)
+    e5 = Entry(gu, textvariable=d5).grid(row=n, column=4, padx=5, pady=2)
     z_refs.append(d5)
 
-    tk.Label(gu, text=str(int(tlist[n-1]))).grid(row=n, column=6, padx=5, pady=2) #transmission
+    tk.Label(gu, text=str(int(tlist[n-1]))).grid(row=n, column=5, padx=5, pady=2) #transmission
     transm_refs.append(int(tlist[n-1]))
 
     i7 = StringVar(gu)  #time  / IntVar
     i7.set("0")
     e7 = Entry(gu, textvariable=i7)
-    e7.grid(row=n, column=7, padx=5, pady=2)
+    e7.grid(row=n, column=6, padx=5, pady=2)
     time_refs.append(i7)
 
     c8 = IntVar(gu)  #check to have same time as previously
     button1 = tk.Checkbutton(gu, variable=c8, onvalue=1, offvalue=0, command=lambda c8=c8,e7=e7,n=n: upd(c8,e7,n))
     if n!=1:
-        button1.grid(row=n, column=8)
+        button1.grid(row=n, column=7)
 
     d9 = StringVar(gu)  #thickness / intvar
     d9.set("0.000")
-    e9 = Entry(gu, textvariable=d9).grid(row=n, column=9, padx=5, pady=2)
+    e9 = Entry(gu, textvariable=d9).grid(row=n, column=8, padx=5, pady=2)
     thick_refs.append(d9)
 
 
@@ -284,9 +280,6 @@ gu.mainloop()
 initiales = d10.get()
 
 # Create script
-runpath = os.path.join(pfx,str(d1)+'_'+str(initiales)+"_macro.mac")
-parampath = os.path.join(pfx,str(d1)+'_'+str(initiales)+"_parameters.csv")
-lupopath = os.path.join(pfx,str(d1)+'_'+str(initiales)+"_lupo.txt")
 ztest = ''
 temptest = ''
 heat = False
@@ -294,77 +287,110 @@ cool = False
 tempreg = False  #checks if the temperature regulation has been used
 temperatures = d9.get()
 temp_str_list = temperatures.split(',')
-filelist= []    #stores the names of all files already created in one place
+tr_vac = ''
+templine = ''
+
+path1 = str(d1)+'_'+str(initiales)
+extentlist = ["_macro.mac", "_parameters.csv", "_lupo.txt"]
+filelist= [f for f in listdir(pfx) if isfile(join(pfx, f))]    #stores the names of all files already created in one place !!!!! THE PROBLEMMM !!!
+
+a2 = path1   #incrementation of names of macro, parameters, lupo files if necessary
+for inc in np.arange(2,1001,1):
+    if any((str(a2)+i) in filelist for i in extentlist):
+        a2 = path1+'-'+str(inc)
+    else:
+        break
+
+runpath = os.path.join(pfx,str(a2)+"_macro.mac")
+parampath =  os.path.join(pfx,str(a2)+"_parameters.csv")
+lupopath =  os.path.join(pfx,str(a2)+"_lupo.txt")
+
 with open(runpath, 'w') as f:
     f.write('sc'+'\n')
     f.write('\n')
-    for temp_sample in temp_str_list:
-        if temp_sample!='' and temp_sample!=temptest:  #if temp is the same or if temp field is not filled, we don't write set_temp again
-            tempreg = True
-            if 40 >= float(temp_sample) >= 10:    #loops for conditions on turning on/off heating and cooling
-                if heat==False:
-                    f.write('heat_on'+'\n')
-                    heat=True
-                if cool==False:
-                    f.write('cool_on'+'\n')
-                    cool=True
-            if float(temp_sample) > 40:
-                if heat==False:
-                    f.write('heat_on'+'\n')
-                    heat=True
-                if cool==True:
-                    f.write('cool_off'+'\n')
-                    cool = False
-            if float(temp_sample) < 10:
-                if heat==True:
-                    f.write('heat_off'+'\n')
-                    heat=False
-                if cool==False:
-                    f.write('cool_on'+'\n')
-                    cool = True
-            sleep_time = 900     #standard 15 min for equilibration
-            f.write('set_temp '+str(temp_sample)+'\n')
-            f.write('sleep('+str(sleep_time)+')'+'\n')
-        if len(temp_str_list) > 0:
-            templine = '_T'+str(temp_sample)
+    if temp_str_list!='':
+        for temp_sample in temp_str_list:
+            if temp_sample!='' and temp_sample!=temptest:  #if temp is the same or if temp field is not filled, we don't write set_temp again
+                tempreg = True
+                if 40 >= float(temp_sample) >= 10:    #loops for conditions on turning on/off heating and cooling
+                    if heat==False:
+                        f.write('heat_on'+'\n')
+                        heat=True
+                    if cool==False:
+                        f.write('cool_on'+'\n')
+                        cool=True
+                if float(temp_sample) > 40:
+                    if heat==False:
+                        f.write('heat_on'+'\n')
+                        heat=True
+                    if cool==True:
+                        f.write('cool_off'+'\n')
+                        cool = False
+                if float(temp_sample) < 10:
+                    if heat==True:
+                        f.write('heat_off'+'\n')
+                        heat=False
+                    if cool==False:
+                        f.write('cool_on'+'\n')
+                        cool = True
+                sleep_time = 900     #standard 15 min for equilibration
+                f.write('set_temp '+str(temp_sample)+'\n')
+                f.write('sleep('+str(sleep_time)+')'+'\n')
+                templine = '_T'+str(temp_sample)
+
+    temptest = temp_sample
+
+    for n in np.arange(1,len(coord)+1,1):
+        type_sample = type_refs[n-1].get()
+        if type_sample == "Air":
+            tr_vac = str(transm_refs[n-1])
         else:
-            templine=''
-        temptest = temp_sample
+            time_sample = time_refs[n-1].get()
+            name_sample = name_refs[n-1].get()
+            x_sample = x_refs[n-1]
+            z_tempor = z_refs[n-1].get()  #string
+            z_str_list = z_tempor.split(',')   #split z_temp in a list of strings using comma sep.
+            f.write('umv sax '+str(x_sample)+'\n')   #move to x pos.
 
-        for n in np.arange(1,len(coord)+1,1):
-            type_sample = type_refs[n-1].get()
-            if type_sample != "Vacuum":
-                time_sample = time_refs[n-1].get()
-                name_sample = name_refs[n-1].get()
-                x_sample = x_refs[n-1]
-                z_tempor = z_refs[n-1].get()  #string
-                z_str_list = z_tempor.split(',')   #split z_temp in a list of strings using comma sep.
-                f.write('umv sax '+str(x_sample)+'\n')   #move to x pos.
+            for z_sample in z_str_list:
+                if z_sample != '' and z_sample!= ztest:  #if z is the same or if z-pos field is not filled, we don't write umv saz again
+                    f.write('umv saz '+str(z_sample)+'\n')
+                if len(z_str_list) > 1:
+                    zline ='_z'+str(z_sample)  #puts z value in file name if several
+                else:
+                    zline = ''
+                ztest = z_sample
 
-                for z_sample in z_str_list:
-                    if z_sample != '' and z_sample!= ztest:  #if z is the same or if z-pos field is not filled, we don't write umv saz again
-                        f.write('umv saz '+str(z_sample)+'\n')
-                    if len(z_str_list) > 1:
-                        zline ='_z'+str(z_sample)  #puts z value in file name if several
+                acqline = 'startacq '+str(time_sample)+' '+str(d1)+'_'+str(initiales)+'_'+str(name_sample)
+
+                testpath1 = pfx+str(d1)+'_'+str(initiales)+'_'+str(name_sample)+zline+templine   #for testing if file exists
+                testpath2 = testpath1
+
+                for inc in np.arange(2,1001,1):
+                    if testpath2 in filelist:    #if there is already a file with the same name in the folder..
+                        testpath2 = testpath1+'-'+str(inc)   #we name the new file with increment
                     else:
-                        zline = ''
-                    ztest = z_sample
+                        filelist.append(testpath2)  #we store the final name of the new file
+                        break
+                if testpath2 != testpath1:     #tests if there is a need for increment of the name in the acquisition line
+                    f.write(acqline+zline+templine+'-'+str(inc-1)+'\n')
+                    rptname = str(d1)+'_'+str(initiales)+'_'+str(name_sample)+zline+templine+'-'+str(inc-1)
+                else:
+                    f.write(acqline+zline+templine+'\n')   #start acquisition, add z and T to file name if relevant
+                    rptname = str(d1)+'_'+str(initiales)+'_'+str(name_sample)+zline+templine
 
-                    acqline = 'startacq '+str(time_sample)+' '+str(d1)+'_'+str(initiales)+'_'+str(name_sample)
-
-                    testpath1 = pfx+str(d1)+'_'+str(initiales)+'_'+str(name_sample)+zline+templine   #for testing if file exists
-                    testpath2 = testpath1
-
-                    for inc in np.arange(2,1001,1):
-                        if testpath2 in filelist:    #if there is already a file with the same name in the folder..
-                            testpath2 = testpath1+'-'+str(inc)   #we name the new file with increment
-                        else:
-                            filelist.append(testpath2)  #we store the final name of the new file
-                            break
-                    if testpath2 != testpath1:     #tests if there is a need for increment of the name in the acquisition line
-                        f.write(acqline+zline+templine+'-'+str(inc-1)+'\n')
-                    else:
-                        f.write(acqline+zline+templine+'\n')   #start acquisition, add z and T to file name if relevant
+            # Save rpt files
+            rptpath = os.path.join(pfx,rptname+".rpt")
+            with open(rptpath, 'w') as rpt:
+                rpt.write('[acquisition]'+'\n')
+                rpt.write('filename = '+rptname+'\n')
+                rpt.write('transmittedflux = '+str(transm_refs[n-1])+'\n')
+                rpt.write('thickness = '+str(thick_refs[n-1].get())+'\n') 
+                rpt.write('time = '+str(time_refs[n-1].get())+'\n')  
+                rpt.write('wavelength = 0.71'+'\n')
+                rpt.write('incidentflux = '+tr_vac+'\n')  
+                rpt.write('pixel_size = 0.015'+'\n')
+            rpt.close()
 
     if tempreg==True:    #if the temperature regulation has been activated..
         f.write('\n'+'set_temp 20'+'\n')  #we put back the target temperature at 20°C at the end..
@@ -379,7 +405,7 @@ with open(parampath, 'w', encoding='UTF8') as h:
     header = ['Name', 'Sample group', 'Type', 'X position', 'Z positions', 'Transmission', 'Time (s)', 'Thickness']
     writer.writerow(header)
     for n in np.arange(0,len(coord),1):
-        data = [name_refs[n].get(), number_refs[n].get(), type_refs[n].get(), x_refs[n], z_refs[n].get(), transm_refs[n],
+        data = [name_refs[n].get(), type_refs[n].get(), x_refs[n], z_refs[n].get(), transm_refs[n],
         time_refs[n].get(), thick_refs[n].get()]
         writer.writerow(data)
 h.close()
@@ -389,10 +415,9 @@ with open(lupopath, 'w') as p:
     p.write('Type'+'\t'+'Transmission'+'\t'+'Time (s)'+'\n')
     for n in np.arange(0,len(coord),1):
         if type_refs[n].get()=="Lupo/PE":
-            num = number_refs[n].get()
             p.write(str(type_refs[n].get())+'\t'+str(transm_refs[n])+'\t'+str(time_refs[n].get())+'\n')
             for m in np.arange(0,len(coord),1):
-                if type_refs[m].get()=="Vacuum" and number_refs[m].get()==num:
+                if type_refs[m].get()=="Air":
                     p.write(str(type_refs[m].get())+'\t'+str(transm_refs[m])+'\n')
                     break
             break
