@@ -1,12 +1,7 @@
-import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Cursor
-import os, sys, subprocess
-import tkinter as tk
+import os
 import tkinter.filedialog as fd
-from tkinter import Tk,IntVar,StringVar,Entry,OptionMenu,DoubleVar,messagebox
-import csv
-from datetime import date
+from tkinter import Tk
 plt.rcParams.update({'font.size': 16, 'figure.figsize': [12.0, 6.0]})
 
 ponidir = '.' #'/home/mar345/data/LineUp'
@@ -26,5 +21,5 @@ rptlist = fd.askopenfilenames(parent=gu, title='Select rpt files', filetypes=[("
 gu.destroy()
 for file in rptlist:
     with open(file, 'a') as rpt:
-        rpt.write('d = '+str(distance)+'\n')  
+        rpt.write('d = '+str(distance)+'\n')
         rpt.close()
