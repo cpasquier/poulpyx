@@ -4,7 +4,7 @@ from matplotlib.widgets import Cursor
 import os, sys, subprocess
 import tkinter as tk
 import tkinter.filedialog as fd
-from tkinter import Tk,IntVar,StringVar,Entry,OptionMenu,DoubleVar,messagebox
+from tkinter import Tk,IntVar,StringVar,Entry,OptionMenu,messagebox
 import csv
 from datetime import date
 from os import listdir
@@ -15,7 +15,7 @@ plt.rcParams.update({'font.size': 16, 'figure.figsize': [12.0, 6.0]})
 today = date.today()
 d1 = today.strftime("%y%m%d")
 
-# File 
+# File
 linedir = '.' #'/home/mar345/data/LineUp'
 lfnumber = []
 if os.path.isdir(linedir):
@@ -141,14 +141,14 @@ def close_window2():       #function to close the window
     gu.destroy()
 
 def checkbeforeclose():    #check if all fields are filled correctly prior to closing the window
-    karl, lila, thi_error = ([],[],[]) 
+    karl, lila, thi_error = ([],[],[])
     err1,err2,err3,err4,err5,err6,err7,err8 = ('','','','','','','','')
     iserr = False
     temperatures1 = d9.get()
     temp_str_list1 = temperatures1.split(',')
     for i in np.arange(0,len(name_refs),1):
         z_tempor1 = z_refs[i].get()          #test pour savoir si tous les z sont des float
-        z_str_list1 = z_tempor1.split(',')   
+        z_str_list1 = z_tempor1.split(',')
         for a in z_str_list1:
             if a!='':
                 try:
@@ -385,10 +385,10 @@ with open(runpath, 'w') as f:
                             rpt.write('[acquisition]'+'\n')
                             rpt.write('filename = '+rptname+'\n')
                             rpt.write('transmittedflux = '+str(transm_refs[n-1])+'\n')
-                            rpt.write('thickness = '+str(thick_refs[n-1].get())+'\n') 
-                            rpt.write('time = '+str(time_refs[n-1].get())+'\n')  
+                            rpt.write('thickness = '+str(thick_refs[n-1].get())+'\n')
+                            rpt.write('time = '+str(time_refs[n-1].get())+'\n')
                             rpt.write('wavelength = 0.71'+'\n')
-                            rpt.write('incidentflux = '+tr_vac+'\n')  
+                            rpt.write('incidentflux = '+tr_vac+'\n')
                             rpt.write('pixel_size = 0.015'+'\n')
                         rpt.close()
 
