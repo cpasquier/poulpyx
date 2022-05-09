@@ -292,7 +292,7 @@ templine = ''
 
 path1 = str(d1)+'_'+str(initiales)
 extentlist = ["_macro.mac", "_parameters.csv", "_lupo.txt"]
-filelist= [f for f in listdir(pfx) if isfile(join(pfx, f))]    #stores the names of all files already created in one place !!!!! THE PROBLEMMM !!!
+filelist= [f for f in listdir(pfx) if isfile(join(pfx, f))]
 
 a2 = path1   #incrementation of names of macro, parameters, lupo files if necessary
 for inc in np.arange(2,1001,1):
@@ -336,61 +336,61 @@ with open(runpath, 'w') as f:
                 sleep_time = 900     #standard 15 min for equilibration
                 f.write('set_temp '+str(temp_sample)+'\n')
                 f.write('sleep('+str(sleep_time)+')'+'\n')
-                templine = '_T'+str(temp_sample)
 
-    temptest = temp_sample
+            templine = '_T'+str(temp_sample)
+            temptest = temp_sample     ##### SHIFTED
 
-    for n in np.arange(1,len(coord)+1,1):
-        type_sample = type_refs[n-1].get()
-        if type_sample == "Air":
-            tr_vac = str(transm_refs[n-1])
-        else:
-            time_sample = time_refs[n-1].get()
-            name_sample = name_refs[n-1].get()
-            x_sample = x_refs[n-1]
-            z_tempor = z_refs[n-1].get()  #string
-            z_str_list = z_tempor.split(',')   #split z_temp in a list of strings using comma sep.
-            f.write('umv sax '+str(x_sample)+'\n')   #move to x pos.
-
-            for z_sample in z_str_list:
-                if z_sample != '' and z_sample!= ztest:  #if z is the same or if z-pos field is not filled, we don't write umv saz again
-                    f.write('umv saz '+str(z_sample)+'\n')
-                if len(z_str_list) > 1:
-                    zline ='_z'+str(z_sample)  #puts z value in file name if several
+            for n in np.arange(1,len(coord)+1,1):
+                type_sample = type_refs[n-1].get()
+                if type_sample == "Air":
+                    tr_vac = str(transm_refs[n-1])
                 else:
-                    zline = ''
-                ztest = z_sample
+                    time_sample = time_refs[n-1].get()
+                    name_sample = name_refs[n-1].get()
+                    x_sample = x_refs[n-1]
+                    z_tempor = z_refs[n-1].get()  #string
+                    z_str_list = z_tempor.split(',')   #split z_temp in a list of strings using comma sep.
+                    f.write('umv sax '+str(x_sample)+'\n')   #move to x pos.
 
-                acqline = 'startacq '+str(time_sample)+' '+str(d1)+'_'+str(initiales)+'_'+str(name_sample)
+                    for z_sample in z_str_list:
+                        if z_sample != '' and z_sample!= ztest:  #if z is the same or if z-pos field is not filled, we don't write umv saz again
+                            f.write('umv saz '+str(z_sample)+'\n')
+                        if len(z_str_list) > 1:
+                            zline ='_z'+str(z_sample)  #puts z value in file name if several
+                        else:
+                            zline = ''
+                        ztest = z_sample
 
-                testpath1 = pfx+str(d1)+'_'+str(initiales)+'_'+str(name_sample)+zline+templine   #for testing if file exists
-                testpath2 = testpath1
+                        acqline = 'startacq '+str(time_sample)+' '+str(d1)+'_'+str(initiales)+'_'+str(name_sample)
 
-                for inc in np.arange(2,1001,1):
-                    if testpath2 in filelist:    #if there is already a file with the same name in the folder..
-                        testpath2 = testpath1+'-'+str(inc)   #we name the new file with increment
-                    else:
-                        filelist.append(testpath2)  #we store the final name of the new file
-                        break
-                if testpath2 != testpath1:     #tests if there is a need for increment of the name in the acquisition line
-                    f.write(acqline+zline+templine+'-'+str(inc-1)+'\n')
-                    rptname = str(d1)+'_'+str(initiales)+'_'+str(name_sample)+zline+templine+'-'+str(inc-1)
-                else:
-                    f.write(acqline+zline+templine+'\n')   #start acquisition, add z and T to file name if relevant
-                    rptname = str(d1)+'_'+str(initiales)+'_'+str(name_sample)+zline+templine
+                        testpath1 = pfx+str(d1)+'_'+str(initiales)+'_'+str(name_sample)+zline+templine   #for testing if file exists
+                        testpath2 = testpath1
 
-            # Save rpt files
-            rptpath = os.path.join(pfx,rptname+".rpt")
-            with open(rptpath, 'w') as rpt:
-                rpt.write('[acquisition]'+'\n')
-                rpt.write('filename = '+rptname+'\n')
-                rpt.write('transmittedflux = '+str(transm_refs[n-1])+'\n')
-                rpt.write('thickness = '+str(thick_refs[n-1].get())+'\n') 
-                rpt.write('time = '+str(time_refs[n-1].get())+'\n')  
-                rpt.write('wavelength = 0.71'+'\n')
-                rpt.write('incidentflux = '+tr_vac+'\n')  
-                rpt.write('pixel_size = 0.015'+'\n')
-            rpt.close()
+                        for inc in np.arange(2,1001,1):
+                            if testpath2 in filelist:    #if there is already a file with the same name in the folder..
+                                testpath2 = testpath1+'-'+str(inc)   #we name the new file with increment
+                            else:
+                                filelist.append(testpath2)  #we store the final name of the new file
+                                break
+                        if testpath2 != testpath1:     #tests if there is a need for increment of the name in the acquisition line
+                            f.write(acqline+zline+templine+'-'+str(inc-1)+'\n')
+                            rptname = str(d1)+'_'+str(initiales)+'_'+str(name_sample)+zline+templine+'-'+str(inc-1)
+                        else:
+                            f.write(acqline+zline+templine+'\n')   #start acquisition, add z and T to file name if relevant
+                            rptname = str(d1)+'_'+str(initiales)+'_'+str(name_sample)+zline+templine
+
+                        # Save rpt files
+                        rptpath = os.path.join(pfx,rptname+".rpt")
+                        with open(rptpath, 'w') as rpt:
+                            rpt.write('[acquisition]'+'\n')
+                            rpt.write('filename = '+rptname+'\n')
+                            rpt.write('transmittedflux = '+str(transm_refs[n-1])+'\n')
+                            rpt.write('thickness = '+str(thick_refs[n-1].get())+'\n') 
+                            rpt.write('time = '+str(time_refs[n-1].get())+'\n')  
+                            rpt.write('wavelength = 0.71'+'\n')
+                            rpt.write('incidentflux = '+tr_vac+'\n')  
+                            rpt.write('pixel_size = 0.015'+'\n')
+                        rpt.close()
 
     if tempreg==True:    #if the temperature regulation has been activated..
         f.write('\n'+'set_temp 20'+'\n')  #we put back the target temperature at 20°C at the end..
