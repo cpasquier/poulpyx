@@ -41,7 +41,7 @@ button1 = tk.Button(text = "OK", command = close_window).grid(row=1,pady=10)
 gui.mainloop()
 tr_expe_nr = a1.get()
 
-# Scans the experiment data gets the x and transmission values
+# Scans the experiment data gets the x and flux values
 searchlines = tr_file.readlines()
 tr_file.close()
 
@@ -72,7 +72,7 @@ pfx = fd.askdirectory(parent=gu3, title='Select a folder to save data')
 gu3.destroy()
 
 # Plots the data and enables to click and unclick points on the plot, and numbers them
-figpath = os.path.join(pfx,str(d1)+"_transmissions.png")   #figure that will be saved
+figpath = os.path.join(pfx,str(d1)+"_flux.png")   #figure that will be saved
 fig = plt.figure()
 ax = fig.subplots()
 ax.plot(xpos_list, tr_list, color = 'b')
@@ -128,7 +128,7 @@ def auto_open_file(filename):
         subprocess.call([opener, filename])
 auto_open_file(figpath)
 
-# Create lists of x pos. and transmission previously clicked
+# Create lists of x pos. and flux previously clicked
 xlist = []
 tlist = []
 
@@ -213,7 +213,7 @@ tk.Label(gu, text="Name").grid(row=0, column=1)
 tk.Label(gu, text="Meas. type").grid(row=0, column=2)
 tk.Label(gu, text="x pos.").grid(row=0, column=3)
 tk.Label(gu, text="z pos.").grid(row=0, column=4)
-tk.Label(gu, text="Transmission").grid(row=0, column=5)
+tk.Label(gu, text="Flux").grid(row=0, column=5)
 tk.Label(gu, text="Measurement time (s)").grid(row=0, column=6)
 tk.Label(gu, font=("Arial", 8, "italic"), text="Same as previous").grid(row=0, column=7)
 tk.Label(gu, text="Thickness (cm)").grid(row=0, column=8)
@@ -223,7 +223,7 @@ time_refs = []
 x_refs = []
 z_refs = []
 type_refs = []
-transm_refs = []
+flux_refs = []
 thick_refs = []
 
 for n in np.arange(1,len(coord)+1,1):
@@ -245,8 +245,8 @@ for n in np.arange(1,len(coord)+1,1):
     e5 = Entry(gu, textvariable=d5).grid(row=n, column=4, padx=5, pady=2)
     z_refs.append(d5)
 
-    tk.Label(gu, text=str(int(tlist[n-1]))).grid(row=n, column=5, padx=5, pady=2) #transmission
-    transm_refs.append(int(tlist[n-1]))
+    tk.Label(gu, text=str(int(tlist[n-1]))).grid(row=n, column=5, padx=5, pady=2) #flux
+    flux_refs.append(int(tlist[n-1]))
 
     i7 = StringVar(gu)  #time  / IntVar
     i7.set("0")
@@ -343,7 +343,7 @@ with open(runpath, 'w') as f:
             for n in np.arange(1,len(coord)+1,1):
                 type_sample = type_refs[n-1].get()
                 if type_sample == "Air":
-                    tr_vac = str(transm_refs[n-1])
+                    tr_vac = str(flux_refs[n-1])
                 else:
                     time_sample = time_refs[n-1].get()
                     name_sample = name_refs[n-1].get()
@@ -384,7 +384,7 @@ with open(runpath, 'w') as f:
                         with open(rptpath, 'w') as rpt:
                             rpt.write('[acquisition]'+'\n')
                             rpt.write('filename = '+rptname+'\n')
-                            rpt.write('transmittedflux = '+str(transm_refs[n-1])+'\n')
+                            rpt.write('transmittedflux = '+str(flux_refs[n-1])+'\n')
                             rpt.write('thickness = '+str(thick_refs[n-1].get())+'\n')
                             rpt.write('time = '+str(time_refs[n-1].get())+'\n')
                             rpt.write('wavelength = 0.71'+'\n')
@@ -402,23 +402,23 @@ f.close()
 # Recap everything in one csv file
 with open(parampath, 'w', encoding='UTF8') as h:
     writer = csv.writer(h)
-    header = ['Name', 'Sample group', 'Type', 'X position', 'Z positions', 'Transmission', 'Time (s)', 'Thickness']
+    header = ['Name', 'Sample group', 'Type', 'X position', 'Z positions', 'Flux', 'Time (s)', 'Thickness']
     writer.writerow(header)
     for n in np.arange(0,len(coord),1):
-        data = [name_refs[n].get(), type_refs[n].get(), x_refs[n], z_refs[n].get(), transm_refs[n],
+        data = [name_refs[n].get(), type_refs[n].get(), x_refs[n], z_refs[n].get(), flux_refs[n],
         time_refs[n].get(), thick_refs[n].get()]
         writer.writerow(data)
 h.close()
 
 # Save Lupo info for k calculation later
 with open(lupopath, 'w') as p:
-    p.write('Type'+'\t'+'Transmission'+'\t'+'Time (s)'+'\n')
+    p.write('Type'+'\t'+'Flux'+'\t'+'Time (s)'+'\n')
     for n in np.arange(0,len(coord),1):
         if type_refs[n].get()=="Lupo/PE":
-            p.write(str(type_refs[n].get())+'\t'+str(transm_refs[n])+'\t'+str(time_refs[n].get())+'\n')
+            p.write(str(type_refs[n].get())+'\t'+str(flux_refs[n])+'\t'+str(time_refs[n].get())+'\n')
             for m in np.arange(0,len(coord),1):
                 if type_refs[m].get()=="Air":
-                    p.write(str(type_refs[m].get())+'\t'+str(transm_refs[m])+'\n')
+                    p.write(str(type_refs[m].get())+'\t'+str(flux_refs[m])+'\n')
                     break
             break
 p.close()
